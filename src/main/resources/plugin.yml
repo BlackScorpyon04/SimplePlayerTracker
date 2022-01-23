@@ -1,0 +1,20 @@
+name: Simpleplayertracker
+version: '${project.version}'
+main: me.jordan.simpleplayertracker.Main
+api-version: 1.18
+authors: [ BlackScorpyon04 ]
+description: Tracks players using a compass
+
+permissions:
+  pt.track:
+    description: Allows player to use compass
+  pt.bypass:
+    description: Player wont show up in compass
+    default: false
+  pt.compass:
+    description: Allow player to use /compass
+
+commands:
+  ptcompass:
+    description: Gives player a compass
+    permission: pt.compass

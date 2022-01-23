@@ -1,0 +1,6 @@
+#Shows how far player is away in blocks
+showdistance: true
+#Max distance it will track (0 is infinite)
+maxdistance: 0
+#Min distance it will track (0 is infinite)
+mindistance: 0
