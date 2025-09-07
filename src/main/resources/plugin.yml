@@ -1,7 +1,7 @@
 name: Simpleplayertracker
 version: '${project.version}'
 main: me.jordan.simpleplayertracker.Main
-api-version: 1.18
+api-version: 1.21
 authors: [ BlackScorpyon04 ]
 description: Tracks players using a compass
 
