@@ -1,3 +1,10 @@
+# SimplePlayerTracker
+
+![Downloads](https://img.shields.io/badge/downloads-38%2C367-brightgreen)
+
+A lightweight Minecraft compass tracking plugin with over 38,000 downloads 
+on CurseForge.
+
 PlayerTracker
 
 A Minecraft plugin that lets players track others using a compass with a simple GUI.
