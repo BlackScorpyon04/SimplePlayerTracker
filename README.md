@@ -1,21 +1,27 @@
-Description:
+PlayerTracker
 
-Right click on a compass to bring up a gui and chose a player to track. if you want to change what player you are tracking just hold shift then right click.
+A Minecraft plugin that lets players track others using a compass with a simple GUI.
 
- 
+Features
 
-Commands:
+Right-click a tracking compass to open a player selection GUI
+Hold Shift + right-click to change your tracked player
+Permission-based tracking and bypass system
 
-/ptcompass - gives player a compass
+| Command | Description | Permission |
+|---------|-------------|------------|
+| `/ptcompass` | Gives a tracking compass | `pt.compass` |
 
- 
+Permissions
 
-Permissions:
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `pt.track` | Allows use of tracking compass | `true` |
+| `pt.compass` | Allows use of `/ptcompass` | `op` |
+| `pt.bypass` | Prevents player from being tracked | `op` |
 
-pt.track - Allows players to use the compass
+Installation
 
-pt.bypass - Stops a player from being tracked
-
-pt.compass- Allows player to use ptcompass command
-
- 
+Drop the .jar file into your server's plugins folder
+Restart or reload your server
+Configure permissions as needed
