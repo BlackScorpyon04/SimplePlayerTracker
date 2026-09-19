@@ -4,9 +4,9 @@ A Minecraft plugin that lets players track others using a compass with a simple 
 
 Features
 
-Right-click a tracking compass to open a player selection GUI
-Hold Shift + right-click to change your tracked player
-Permission-based tracking and bypass system
+- Right-click a tracking compass to open a player selection GUI
+- Hold Shift + right-click to change your tracked player
+- Permission-based tracking and bypass system
 
 | Command | Description | Permission |
 |---------|-------------|------------|
@@ -22,6 +22,6 @@ Permissions
 
 Installation
 
-Drop the .jar file into your server's plugins folder
-Restart or reload your server
-Configure permissions as needed
+1. Drop the .jar file into your server's plugins folder
+2. Restart or reload your server
+3. Configure permissions as needed
