@@ -1,7 +1,8 @@
 name: Simpleplayertracker
 version: '${project.version}'
 main: me.jordan.simpleplayertracker.Main
-api-version: 1.21
+api-version: '26.2'
+folia-supported: true
 authors: [ BlackScorpyon04 ]
 description: Tracks players using a compass
 

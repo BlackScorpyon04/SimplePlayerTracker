@@ -1,12 +1,10 @@
 package me.jordan.simpleplayertracker.Listeners;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import me.jordan.simpleplayertracker.Main;
+import me.jordan.simpleplayertracker.Util.PlayerUtils;
 import me.jordan.simpleplayertracker.Util.Utils;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,88 +14,64 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+public class InventoryClick implements Listener {
 
-public class InventoryClick implements Listener{
-
-    private Main plugin;
+    private final Main plugin;
 
     public InventoryClick(Main plugin) {
         this.plugin = plugin;
-
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
-
     @EventHandler
-    public void onClick(InventoryClickEvent e) throws IOException {
-        String title;
-        if (e.getInventory().getType() != InventoryType.PLAYER) {
-            title = e.getView().getTitle();
-        }else {
-            title = "";
+    public void onClick(InventoryClickEvent e) {
+        if (e.getInventory().getType() == InventoryType.PLAYER) return;
+        if (e.getCurrentItem() == null) return;
+
+        String title = PlainTextComponentSerializer.plainText()
+                .serialize(e.getView().title());
+
+        if (!title.equals("Players To Track")) return;
+
+        e.setCancelled(true);
+
+        Material type = e.getCurrentItem().getType();
+        if (type != Material.PLAYER_HEAD && type != Material.ARROW) return;
+
+        Player p = (Player) e.getWhoClicked();
+        ItemMeta clickedMeta = e.getCurrentItem().getItemMeta();
+        if (clickedMeta == null) return;
+
+        String playerName = null;
+
+        if (clickedMeta.lore() != null && !clickedMeta.lore().isEmpty()) {
+            playerName = PlainTextComponentSerializer.plainText()
+                    .serialize(clickedMeta.lore().getFirst());
         }
-        if (e.getCurrentItem() != null) {
-            Player p = (Player) e.getWhoClicked();
-            if (title.equals("Players To Track")) {
-                e.setCancelled(true);
-                if (e.getCurrentItem().getType() == Material.PLAYER_HEAD || e.getCurrentItem().getType() == Material.ARROW) {
-                    String playerName = null;
-                    if (e.getCurrentItem().getItemMeta().hasLore()) {
-                        playerName = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getLore().get(0));
-                    }
 
-                    if (playerName == null){
-                        playerName = Utils.color("&fNearest Player");
-                        Player nearest = null;
-                        for (Player plr : Bukkit.getOnlinePlayers()) {
-                            if (plr.getUniqueId().equals(p.getUniqueId())) {
-                                continue;
-                            }
-                            if (!plr.hasPermission("pt.bypass")) {
-                                if (nearest == null) {
-                                    nearest = plr;
-                                }else {
-                                    if (p.getWorld().equals(plr.getWorld())) {
-                                        if (p.getLocation().distance(plr.getLocation()) < p.getLocation().distance(nearest.getLocation())) {
-                                            nearest = plr;
-                                        }
-                                    }else {
-                                        continue;
-                                    }
-                                }
-                            }
-                        }
-                        if (nearest != null){
-                            p.setCompassTarget(nearest.getLocation());
-                            InteractEvent.players.put(p, null);
-                        }
-                    }else {
-                        Player clickedPlayer = Bukkit.getPlayer(playerName);
-                        p.setCompassTarget(clickedPlayer.getLocation());
-                        InteractEvent.players.put(p, clickedPlayer);
-                    }
+        // Get compass BEFORE closing inventory
+        ItemStack compass = p.getInventory().getItemInMainHand();
 
-                    setName(p.getItemInHand(), "Tracking");
-                    setLore(p.getItemInHand(), playerName);
-                    p.closeInventory();
-                }
+        if (playerName == null) {
+            Player nearest = PlayerUtils.findNearest(p, plugin);
+            if (nearest != null) {
+                p.setCompassTarget(nearest.getLocation());
+                InteractEvent.players.put(p.getUniqueId(), null);
+                Utils.setName(compass, "Tracking");
+                Utils.setLore(compass, "Nearest Player");
+                Main.trackingManager.startTracking(p); // START TASK
+            }
+        } else {
+            Player clickedPlayer = Bukkit.getPlayer(playerName);
+            if (clickedPlayer != null) {
+                p.setCompassTarget(clickedPlayer.getLocation());
+                InteractEvent.players.put(p.getUniqueId(), clickedPlayer.getUniqueId());
+                Utils.setName(compass, "Tracking");
+                Utils.setLore(compass, playerName);
+                Main.trackingManager.startTracking(p); // START TASK
             }
         }
-    }
 
-    public ItemStack setName(ItemStack is, String name){
-        ItemMeta m = is.getItemMeta();
-        m.setDisplayName(name);
-        is.setItemMeta(m);
-        return is;
-    }
-
-    public ItemStack setLore(ItemStack is, String one){
-        ItemMeta meta = is.getItemMeta();
-        ArrayList<String> lore = new ArrayList<String>();
-        lore.add(one);
-        meta.setLore(lore);
-        is.setItemMeta(meta);
-        return is;
+        p.closeInventory();
     }
 }
